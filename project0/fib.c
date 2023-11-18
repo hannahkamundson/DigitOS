@@ -48,4 +48,40 @@ int main(int argc, char **argv) {
  * a new child for each call. Each process should call
  * doFib() exactly once.
  */
-static void doFib(int n, int doPrint) {}
+static void doFib(int n, int doPrint) {
+    int answer;
+
+    if (n == 0) {
+        answer = 0;
+    } else if (n == 1) {
+        answer = 1;
+    } else {
+        pid_t first_child = fork();
+        if (first_child == -1) {
+            unix_error("Could not create fork!");
+        } else if (first_child == 0) {
+            doFib(n-2, 0);
+        } else {
+            int status;
+            wait(&status);
+            answer = WEXITSTATUS(status);
+
+            pid_t second_child = fork();
+            if (second_child == -1) {
+                unix_error("Could not create fork!");
+            } else if (second_child == 0) {
+                doFib(n-1, 0);
+            } else {
+                int second_status;
+                wait(&second_status);
+                answer += WEXITSTATUS(second_status);
+            }
+        }
+    }
+
+    if (doPrint == 1) {
+        fprintf(stdout, "%d\n", answer);
+    } else {
+        exit(answer);
+    }
+}
