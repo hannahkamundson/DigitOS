@@ -7,12 +7,21 @@
 #include <unistd.h>
 #include "util.h"
 
-void signal_handler(int signal) {
+void sig_int_handler(int signal) {
     ssize_t bytes;
     const int STDOUT = 1;
     bytes = write(STDOUT, "Nice try.\n", 10);
     if(bytes != 10)
         exit(-999);
+}
+
+void sig_usr_handler(int signal) {
+    ssize_t bytes;
+    const int STDOUT = 1;
+    bytes = write(STDOUT, "exiting\n", 10);
+    if(bytes != 10)
+        exit(-999);
+    exit(1);
 }
 
 /*
@@ -28,9 +37,11 @@ int main(int argc, char **argv)
 {
     pid_t current_pid = getpid();
     printf("%d\n", current_pid);
-    struct sigaction sig_handler_info = {signal_handler, 0, SA_RESTART};
+    struct sigaction sig_int_handler_info = {sig_int_handler, 0, SA_RESTART};
+    struct sigaction sig_usr_handler_info = {sig_usr_handler, 0, SA_RESTART};
 
-    sigaction(SIGINT, &sig_handler_info, NULL);
+    sigaction(SIGINT, &sig_int_handler_info, NULL);
+    sigaction(SIGUSR1, &sig_usr_handler_info, NULL);
     struct timespec rqtp = {1, 0};
     struct timespec rmtp;
     int nano_status = 0;
