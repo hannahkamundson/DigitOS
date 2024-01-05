@@ -1,3 +1,0 @@
-/Users/lanand/Documents/UT_OS/DigitOS/cmake-build-debug/CMakeFiles/DigitOS.dir
-/Users/lanand/Documents/UT_OS/DigitOS/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/lanand/Documents/UT_OS/DigitOS/cmake-build-debug/CMakeFiles/rebuild_cache.dir
