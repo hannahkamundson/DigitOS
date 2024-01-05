@@ -7,6 +7,22 @@
 #include <unistd.h>
 #include "util.h"
 
+void sig_int_handler(int signal) {
+    ssize_t bytes;
+    const int STDOUT = 1;
+    bytes = write(STDOUT, "Nice try.\n", 10);
+    if(bytes != 10)
+        exit(-999);
+}
+
+void sig_usr_handler(int signal) {
+    ssize_t bytes;
+    const int STDOUT = 1;
+    bytes = write(STDOUT, "exiting\n", 10);
+    if(bytes != 10)
+        exit(-999);
+    exit(1);
+}
 
 /*
  * First, print out the process ID of this process.
@@ -19,7 +35,28 @@
  */
 int main(int argc, char **argv)
 {
-  return 0;
+    pid_t current_pid = getpid();
+    printf("%d\n", current_pid);
+    struct sigaction sig_int_handler_info = {sig_int_handler, 0, SA_RESTART};
+    struct sigaction sig_usr_handler_info = {sig_usr_handler, 0, SA_RESTART};
+
+    sigaction(SIGINT, &sig_int_handler_info, NULL);
+    sigaction(SIGUSR1, &sig_usr_handler_info, NULL);
+    struct timespec rqtp = {1, 0};
+    struct timespec rmtp;
+    int nano_status = 0;
+
+    while(1) {
+        if (nano_status == EINTR) {
+            rqtp = rmtp;
+        } else {
+            printf("Still here\n");
+            rqtp.tv_sec = 1;
+            rqtp.tv_nsec = 0;
+        }
+        nano_status = nanosleep(&rqtp, &rmtp);
+    }
+    return 0;
 }
 
 

@@ -1,0 +1,10 @@
+# ninja log v5
+1	567	1700340696028640453	CMakeFiles/DigitOS.dir/project0/argprinter.c.o	66d9253d53203c4d
+1	601	1700340696062155346	CMakeFiles/DigitOS.dir/project0/tests/test-utils/p2a-ebb/alloc.c.o	2f05377ec179df79
+2	602	1700340696062519194	CMakeFiles/DigitOS.dir/project0/handle.c.o	d8bf4fab64a5df54
+1	607	1700340696066784699	CMakeFiles/DigitOS.dir/project0/tests/test-utils/p2a-ebb/other.c.o	b46c6f3558e0747f
+2	610	1700340696070886294	CMakeFiles/DigitOS.dir/project0/fib.c.o	c862eefd9aa06b18
+3	611	1700340696073313148	CMakeFiles/DigitOS.dir/project0/mykill.c.o	f986e814c922425d
+4	616	1700340696078214358	CMakeFiles/DigitOS.dir/project0/util.c.o	40c8677d8cec8595
+3	617	1700340696080041965	CMakeFiles/DigitOS.dir/project0/utcsh.c.o	1029c0dc0e13ad5e
+3	621	1700340696084666849	CMakeFiles/DigitOS.dir/project0/sig_util.c.o	304452926b2afa6

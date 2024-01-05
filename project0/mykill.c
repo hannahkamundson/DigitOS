@@ -9,5 +9,17 @@
 
 int main(int argc, char **argv)
 {
-  return 0;
+    if (argc != 2) {
+        fprintf(stderr, "Usage: fib <num>\n");
+        exit(-1);
+    }
+
+    char *process_id = argv[1];
+    pid_t process_id_pid = (pid_t) atoi(process_id);
+    int kill_value = kill(process_id_pid, SIGUSR1);
+
+    if (kill_value == -1) {
+        fprintf(stderr, "Kill command failed!\n");
+        exit(-1);
+    }
 }
