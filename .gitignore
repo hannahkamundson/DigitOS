@@ -147,3 +147,5 @@ fabric.properties
 ############################################################ 
 project0/fib
 project0/utcsh
+project0/handle
+project0/mykill

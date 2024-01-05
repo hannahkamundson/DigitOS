@@ -6,23 +6,32 @@
 #include <time.h>
 #include <unistd.h>
 #include "util.h"
+#include <sys/types.h>
 
-void sig_int_handler(int signal) {
+
+void handleSIGINT(int signal) 
+{
     ssize_t bytes;
-    const int STDOUT = 1;
-    bytes = write(STDOUT, "Nice try.\n", 10);
-    if(bytes != 10)
+    // Write to standout by directly calling to POSIX write vs using printf which is an interface that calls write
+    bytes = write(1, "Nice try\n", 10);
+    if(bytes != 10) 
+    {
         exit(-999);
+    }
 }
 
-void sig_usr_handler(int signal) {
+void handleSIGUSR1(int signal)
+{
     ssize_t bytes;
-    const int STDOUT = 1;
-    bytes = write(STDOUT, "exiting\n", 10);
-    if(bytes != 10)
+    bytes = write(1, "Exiting", 8);
+    if(bytes != 10) 
+    {
         exit(-999);
+    }
+
     exit(1);
 }
+
 
 /*
  * First, print out the process ID of this process.
@@ -35,28 +44,28 @@ void sig_usr_handler(int signal) {
  */
 int main(int argc, char **argv)
 {
-    pid_t current_pid = getpid();
-    printf("%d\n", current_pid);
-    struct sigaction sig_int_handler_info = {sig_int_handler, 0, SA_RESTART};
-    struct sigaction sig_usr_handler_info = {sig_usr_handler, 0, SA_RESTART};
+    pid_t processId = getpid();
 
-    sigaction(SIGINT, &sig_int_handler_info, NULL);
-    sigaction(SIGUSR1, &sig_usr_handler_info, NULL);
-    struct timespec rqtp = {1, 0};
-    struct timespec rmtp;
-    int nano_status = 0;
+    printf("%d\n", processId);
 
-    while(1) {
-        if (nano_status == EINTR) {
-            rqtp = rmtp;
-        } else {
-            printf("Still here\n");
-            rqtp.tv_sec = 1;
-            rqtp.tv_nsec = 0;
-        }
-        nano_status = nanosleep(&rqtp, &rmtp);
+    struct sigaction actionOnSIGINT;
+    actionOnSIGINT.sa_handler = handleSIGINT;
+
+    struct sigaction actionOnSIGUSR1;
+    actionOnSIGUSR1.sa_handler = handleSIGUSR1;
+
+    sigaction(SIGINT, &actionOnSIGINT, NULL);
+    sigaction(SIGUSR1, &actionOnSIGUSR1, NULL);
+    
+    const struct timespec requestedTime = { 1 /* second */, 0 /* nanoseconds */ };
+    struct timespec remainingTime;
+    // // Was it interrupted?
+    // int interruptStatus = 0;
+
+    while(true) {
+        printf("Still here\n");
+        nanosleep(&requestedTime, &remainingTime);
     }
+
     return 0;
 }
-
-

@@ -57,21 +57,32 @@ static void doFib(int n, int doPrint) {
         answer = 1;
     } else {
         pid_t first_child = fork();
+        // If there is an error
         if (first_child == -1) {
             unix_error("Could not create fork!");
+        // If this is the child process
         } else if (first_child == 0) {
+            // Run Fib on 2 values back
             doFib(n-2, 0);
+        // If it returns the child process ID (ie, it is the parent)
         } else {
             int status;
             wait(&status);
+            // Store the value of 2 numbers back in the answer
             answer = WEXITSTATUS(status);
 
+            // Then calculate the number 1 back
             pid_t second_child = fork();
+            // if there is an error
             if (second_child == -1) {
                 unix_error("Could not create fork!");
+            // If it is the child, calculate the number before this one
             } else if (second_child == 0) {
                 doFib(n-1, 0);
+
+            // Otherwise, if it is the parent
             } else {
+                // Wait for the 
                 int second_status;
                 wait(&second_status);
                 answer += WEXITSTATUS(second_status);
