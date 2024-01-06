@@ -23,7 +23,7 @@ char* read_raw() {
     char *line = NULL;
     size_t linecap = 0;
 
-    char result = getline(&line, &linecap, stdin);
+    ssize_t result = getline(&line, &linecap, stdin);
     (void)result; // Just so we don't get a compiler issue
 
     return line;
