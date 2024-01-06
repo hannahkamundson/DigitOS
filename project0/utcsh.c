@@ -110,7 +110,9 @@ struct Command readUserInput() {
 char* readRaw() {
     char *line = NULL;
     size_t linecap = 0;
-    getline(&line, &linecap, stdin);
+
+    char result = getline(&line, &linecap, stdin);
+    (void)result; // Just so we don't get a compiler issue
 
     return line;
 }
