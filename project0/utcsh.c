@@ -103,9 +103,11 @@ struct Command readUserInput() {
 }
 
 char* readRaw() {
-  char* input = "path";
+    char *line = NULL;
+    size_t linecap = 0;
+    getline(&line, &linecap, stdin);
 
-  return input;
+    return line;
 }
 
 /** Turn a command line into tokens with strtok
