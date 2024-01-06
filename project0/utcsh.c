@@ -19,18 +19,24 @@ static char prompt[] = "DigitOS> "; /* Command line prompt */
 static char *default_shell_path[2] = {"/bin", NULL};
 /* End Global Variables */
 
+
+struct StringArrayAndSize {
+  char** array; /** The string array */
+  int size; /** The number of arguments */
+};
+
 /* Convenience struct for describing a command. Modify this struct as you see
  * fit--add extra members to help you write your code. */
 struct Command {
-  char **args;      /* Argument array for the command */
+  struct StringArrayAndSize args;      /* Argument array for the command */
   char *outputFile; /* Redirect target for file (NULL means no redirect) */
 };
 
 /* Here are the functions we recommend you implement */
 struct Command readUserInput();
 char *readRaw();
-char **tokenize_command_line(char *cmdline);
-struct Command parse_command(char **tokens);
+struct StringArrayAndSize tokenize_command_line(char *cmdline);
+struct Command parse_command(struct StringArrayAndSize tokensAndSize);
 void eval(struct Command *cmd);
 int try_exec_builtin(struct Command *cmd);
 void exec_external_cmd(struct Command *cmd);
@@ -88,18 +94,17 @@ int main(int argc, char **argv) {
 
 struct Command readUserInput() {
   // Read the raw input
-  char* rawInput = readRaw();
-  printf("\nRAW: %s", rawInput);
+  char* raw = readRaw();
+  printf("\nRAW: %s", raw);
 
   // Tokenize it and get it in a string array
-  char** tokenizedInput = tokenize_command_line(rawInput);
-  int numberOfArgs = (int) sizeof(tokenizedInput) / sizeof(char*);
+  struct StringArrayAndSize tokenized = tokenize_command_line(raw);
 
-  for (int i = 0; i < numberOfArgs; i++) {
-    printf("\nTOKENIZED %d: %s", i, tokenizedInput[i]);
+  for (int i = 0; i < tokenized.size; i++) {
+    printf("\nTOKENIZED %d: %s", i, tokenized.array[i]);
   }
 
-  return parse_command(tokenizedInput);
+  return parse_command(tokenized);
 }
 
 char* readRaw() {
@@ -116,7 +121,7 @@ char* readRaw() {
  * much easier to process. First, you should figure out how many arguments you
  * have, then allocate a char** of sufficient size and fill it using strtok()
  */
-char **tokenize_command_line(char *cmdline) {
+struct StringArrayAndSize tokenize_command_line(char *cmdline) {
   // TODO
   (void)cmdline;
 
@@ -130,11 +135,13 @@ char **tokenize_command_line(char *cmdline) {
 
   // For each argument, move it to the returnable
   for (int i = 0; i < numberOfArgs; i++) {
-    returnable[i] = malloc(sizeof(localArray[i]) * sizeof(char));
+    returnable[i] = malloc(strlen(localArray[i]) + 1);
     strcpy(returnable[i], localArray[i]);
   }
+
+  struct StringArrayAndSize output = { .array = returnable, .size = numberOfArgs };
   
-  return returnable;
+  return output;
 }
 
 /** Turn tokens into a command.
@@ -144,9 +151,9 @@ char **tokenize_command_line(char *cmdline) {
  * it. This function takes a sequence of tokens and turns them into a struct
  * Command.
  */
-struct Command parse_command(char **tokens) {
+struct Command parse_command(struct StringArrayAndSize tokensAndSize) {
   // TODO
-  struct Command dummy = {.args = tokens, .outputFile = NULL};
+  struct Command dummy = {.args = tokensAndSize, .outputFile = NULL};
   return dummy;
 }
 
@@ -187,7 +194,7 @@ void writeError(char msg[]) {
  * If the command is not a built-in command, do nothing and return 0
  */
 int try_exec_builtin(struct Command *cmd) {
-  char* program = cmd->args[0];
+  char* program = cmd->args.array[0];
   printf("\nSearching for command: %s", program);
 
   // Try to match the string
@@ -197,13 +204,11 @@ int try_exec_builtin(struct Command *cmd) {
   } else if (strings_same("cd", program)) {
     printf("\n[cd] command executing.");
 
-    int numberOfArgs = (int) sizeof(cmd->args) / sizeof(char*);
-
-    if (numberOfArgs != 2) {
+    if (cmd->args.size != 2) {
       writeError("You must have exactly one directory.\n");
     }
 
-    int result = chdir(cmd->args[1]);
+    int result = chdir(cmd->args.array[1]);
 
     if (result != 0) {
       writeError("chdir had an error");
