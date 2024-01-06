@@ -13,4 +13,6 @@ struct Command {
   char *outputFile; /* Redirect target for file (NULL means no redirect) */
 };
 
+void write_error(char msg[]);
+
 #endif /* SHARED_H */

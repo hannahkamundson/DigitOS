@@ -1,4 +1,5 @@
 #include "evaluate.h"
+#include "commands.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,14 +28,6 @@ int strings_same(char* string1, char* string2) {
   }
 }
 
-void write_error(char msg[]) {
-  int nbytes_written = write(STDERR_FILENO, msg, strlen(msg));
-
-  if(nbytes_written != (int) strlen(msg)){
-    exit(2);  // Shouldn't really happen -- if it does, error is unrecoverable
-  }
-}
-
 /** Execute built-in commands
  *
  * If the command is a built-in command, execute it and return 1 if appropriate
@@ -49,18 +42,7 @@ int try_exec_builtin(struct Command *cmd) {
     printf("\n[exit] command executing.");
     exit(0);
   } else if (strings_same("cd", program)) {
-    printf("\n[cd] command executing.");
-
-    if (cmd->args.size != 2) {
-      write_error("You must have exactly one directory.\n");
-    }
-
-    int result = chdir(cmd->args.array[1]);
-
-    if (result != 0) {
-      write_error("chdir had an error");
-    }
-
+    command_cd(cmd);
     return 1;
   } else if (strings_same("path", program)) {
     printf("\n[path] command executing.");
