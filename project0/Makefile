@@ -9,10 +9,10 @@ CFLAGS_SAN = -fsanitize=undefined -fsanitize=address -fno-omit-frame-pointer -g
 TESTDIR=tests
 TESTSCRIPT=$(TESTDIR)/run-tests.py
 
-SRCS = utcsh.c util.c 
+SRCS = utcsh.c util.c evaluate.c read.c
 SIGSRCS = mykill.c handle.c sig_util.c 
-HEADERS = util.h
-SIGHEADERS = util.h
+HEADERS = util.h shared.h evaluate.h read.h
+SIGHEADERS = util.h shared.h evaluate.h
 FILES = $(SRCS) $(HEADERS)
 
 $(SHELLNAME): $(FILES)
