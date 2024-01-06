@@ -1,7 +1,10 @@
 #############################################
 # Project specific stuff
 #############################################
-utcsh
+project0/fib
+project0/utcsh
+project0/handle
+project0/mykill
 
 #############################################
 # C
@@ -107,6 +110,7 @@ dkms.conf
 
 # CMake
 cmake-build-*/
+CMakeLists.txt
 
 # Mongo Explorer plugin
 .idea/**/mongoSettings.xml
@@ -142,10 +146,16 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 .idea
 
-############################################################ 
-# Project specific
-############################################################ 
-project0/fib
-project0/utcsh
-project0/handle
-project0/mykill
+
+
+#############################################
+# VS code
+#############################################
+.vscode/*
+
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
