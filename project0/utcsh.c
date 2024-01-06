@@ -128,7 +128,7 @@ char **tokenize_command_line(char *cmdline) {
 
   // For each argument, move it to the returnable
   for (int i = 0; i < numberOfArgs; i++) {
-    returnable[i] = malloc(sizeof(localArray[i]) * sizeof(char));
+    returnable[i] = malloc(strlen(localArray[i]) + 1);
     strcpy(returnable[i], localArray[i]);
   }
   
@@ -198,6 +198,7 @@ int try_exec_builtin(struct Command *cmd) {
     int numberOfArgs = (int) sizeof(cmd->args) / sizeof(char*);
 
     if (numberOfArgs != 2) {
+      printf("Arg number: %d", numberOfArgs);
       writeError("You must have exactly one directory.\n");
     }
 
