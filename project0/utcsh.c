@@ -33,8 +33,8 @@ struct Command {
 };
 
 /* Here are the functions we recommend you implement */
-struct Command readUserInput();
-char *readRaw();
+struct Command read_user_input();
+char* read_raw();
 struct StringArrayAndSize tokenize_command_line(char *cmdline);
 struct Command parse_command(struct StringArrayAndSize tokensAndSize);
 void eval(struct Command *cmd);
@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
     printf("%s", prompt);
     
     /* Read */
-    struct Command command = readUserInput();
+    struct Command command = read_user_input();
 
     /* Evaluate */
     eval(&command);
@@ -92,9 +92,9 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-struct Command readUserInput() {
+struct Command read_user_input() {
   // Read the raw input
-  char* raw = readRaw();
+  char* raw = read_raw();
   printf("\nRAW: %s", raw);
 
   // Tokenize it and get it in a string array
@@ -107,7 +107,7 @@ struct Command readUserInput() {
   return parse_command(tokenized);
 }
 
-char* readRaw() {
+char* read_raw() {
     char *line = NULL;
     size_t linecap = 0;
 
@@ -182,7 +182,7 @@ int strings_same(char* string1, char* string2) {
   }
 }
 
-void writeError(char msg[]) {
+void write_error(char msg[]) {
   int nbytes_written = write(STDERR_FILENO, msg, strlen(msg));
 
   if(nbytes_written != (int) strlen(msg)){
@@ -207,13 +207,13 @@ int try_exec_builtin(struct Command *cmd) {
     printf("\n[cd] command executing.");
 
     if (cmd->args.size != 2) {
-      writeError("You must have exactly one directory.\n");
+      write_error("You must have exactly one directory.\n");
     }
 
     int result = chdir(cmd->args.array[1]);
 
     if (result != 0) {
-      writeError("chdir had an error");
+      write_error("chdir had an error");
     }
 
     return 1;
