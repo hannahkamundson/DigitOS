@@ -1,9 +1,7 @@
 #include "evaluate.h"
 #include "commands.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 /** Evaluate a single command
  *
@@ -40,12 +38,14 @@ int try_exec_builtin(struct Command *cmd) {
   // Try to match the string
   if (strings_same("exit", program)) {
     printf("\n[exit] command executing.");
-    exit(0);
+    command_exit(cmd);
   } else if (strings_same("cd", program)) {
+    printf("\n[cd] command executing.");
     command_cd(cmd);
     return 1;
   } else if (strings_same("path", program)) {
     printf("\n[path] command executing.");
+    command_path(cmd);
     return 1;
   }
 

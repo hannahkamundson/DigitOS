@@ -11,9 +11,6 @@ in the future */
 #include "evaluate.h"
 #include "read.h"
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 /* Global variables */
 /* The array for holding shell paths. Can be edited by the functions in util.c*/
